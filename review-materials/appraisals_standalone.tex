@@ -1,0 +1,64 @@
+% Per-source appraisals of the systematic literature review.
+%
+% This document is generated from the thesis source: it is the appraisal
+% section that the thesis itself does not typeset. Compile with pdflatex,
+% bibtex, pdflatex, pdflatex (or press Recompile in Overleaf).
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{amssymb}   % \bigstar in the usability marks
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{xcolor}
+\usepackage[inline]{enumitem}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=black, citecolor=black, urlcolor=blue}
+
+% The appraisal macros, copied from the thesis preamble so that this document
+% renders the entries exactly as the thesis would.
+\definecolor{progreen}{RGB}{0,110,0}
+\definecolor{conred}{RGB}{160,0,0}
+\definecolor{acqblue}{RGB}{30,60,140}
+\newcommand{\pro}[1]{\textcolor{progreen}{\textbf{+}} #1}
+\newcommand{\con}[1]{\textcolor{conred}{\textbf{--}} #1}
+\newcommand{\usmark}[1]{\textbf{Usability:} #1}
+\newcommand{\acq}[1]{\textcolor{acqblue}{\textbf{Acquisition:}} #1}
+\newcommand{\datasets}[1]{\textbf{Datasets:} #1}
+\newcommand{\slrpaper}[4]{%
+  \subsubsection*{#1}%
+  \textit{#2.} #3.\par\smallskip
+  #4\par\medskip
+}
+\newcommand{\code}[1]{\texttt{\small #1}}
+\newcommand{\dataset}[1]{\textsc{#1}}
+
+\title{Per-source appraisals\\[0.3em]
+  \large Review materials accompanying the thesis\\
+  \normalsize Assessing Dataset Suitability for Log-Based Security Analytics}
+\author{Marcus Pilgram}
+\date{}
+
+\begin{document}
+\maketitle
+
+\noindent
+This document is the audit trail of the systematic literature review. It
+records, for each reviewed source, the acquisition channel, a summary, the
+arguments for and against its use, the usability verdict, and the datasets the
+source evaluates on. The thesis reports the aggregate results of the review and
+its appendix carries the quality-assessment scores, the acquisition channels and
+the thematic evidence tables; this document carries the per-source detail behind
+them.
+
+\medskip\noindent
+Cross-references to the thesis are given by name rather than by number, because
+the two documents are numbered independently.
+
+\tableofcontents
+\bigskip
+
+\input{appraisals}
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

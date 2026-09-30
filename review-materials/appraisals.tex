@@ -1,0 +1,1399 @@
+%------------------------------------------------------------------
+
+Sources are organized into ten thematic areas. The per-area counts shown
+in parentheses sum to 100, more than the 89 systematically-searched sources,
+for two reasons: a source that substantively informs more than one area is
+discussed under each and counted in both (here only LLMParser~\cite{llmparser}), and the
+supplementary companion and unnumbered entries described below each carry
+their own heading. Every systematically-searched source nonetheless appears
+exactly once in the single-count tier classification of
+the source-classification table of the thesis. Each
+entry reports the acquisition channel, a summary, pro/con arguments, and
+the usability verdict. Two kinds of entry appear in these appraisals
+without counting toward the 89/93 review total: five companion entries,
+close relatives discussed alongside their parent
+source, and five further foundational or methodological citations
+(Cover--Thomas, Gini/Yitzhaki, Lee et al.\ 2022, Inam et al.\ 2023, and
+NIST SP~800-92), assessed for transparency but lying outside the
+systematic search.
+
+%---------------------------
+\subsection{Benchmark Critiques and Log-Dataset Fitness (11 sources)}
+\label{sec:bg-landscape}
+%---------------------------
+
+The benchmark-critique strand of the literature motivates the core 
+question of this work. Loghub~\cite{loghub2023} consolidates 16 public log
+datasets including HDFS, Hadoop, OpenStack, BGL, Thunderbird, and
+others; several are repackaged HPC fault logs~\cite{oliner2007,%
+schroeder2006} originally collected for reliability research, not
+security evaluation. The AIT log datasets~\cite{ait2021have,%
+ait2023maintainable} are produced by a model-driven simulation testbed
+with configurable normal and attack behavior; three testbed
+scenarios (Russell Mitchell, Santos and Wilson) are profiled in the thesis.
+Provenance and endpoint datasets (ATLASv2~\cite{atlasv2}, the DARPA
+TC streams CADETS and THEIA~\cite{darpa-tc-e3}) and the network-telemetry dataset
+UWF-ZeekData22~\cite{uwfzeek22} are also included.
+
+\slrpaper{Landauer, Skopik, Wurzenberger (2024) -- A Critical Review of Common Log Data Sets}
+{Max Landauer, Florian Skopik, Markus Wurzenberger}
+{Proc.\ ACM Softw.\ Eng.\ (FSE) 1:1354--1375, 2024}
+{Empirically dissects HDFS, BGL, Thunderbird, OpenStack and Hadoop and
+shows widespread redundancy, label leakage and non-sequential
+anomalies. Operationalises redundancy via entropy and
+near-duplicate-sequence analysis.
+\begin{itemize}[nosep]
+  \item \acq{Channel~1 (seed).}
+  \item \datasets{HDFS, BGL, Thunderbird, OpenStack, Hadoop (the five
+  Loghub benchmarks dissected; all in-corpus).}
+  \item \pro{Highly relevant: first to systematically criticize
+  benchmark reuse; directly precedents D1 metrics. Concrete numbers:
+  OpenStack $>98.5\%$ overlap, Hadoop $>83\%$ duplicated sequences.
+  The authors argue that high-capacity models may exploit benchmark
+  simplicity and leakage rather than learn generalizable anomaly patterns,
+  that reporting F1 alone is uninformative under severe class imbalance,
+  and that the original data is often unavailable.}
+  \item \con{The paper's recommendation of ADFA should be treated cautiously:
+  ADFA was proposed over a decade earlier for a host-based IDS setting and
+  does not directly address modern log-based anomaly detection.}
+  \item \usmark{$\bigstar$ Primary: anchors D1, D3; provides canonical negative cases.}
+\end{itemize}}
+
+\slrpaper{Yu, Yao, Fu et al.\ (2024) -- Deep Learning or Classical Machine Learning?}
+{Boxi Yu, Jiayi Yao, Qiuai Fu et al.}
+{ICSE 2024}
+{Shows KNN/DT/SLFN match or beat CNN/LogRobust/NeuralLog on five
+benchmarks when tuned fairly; KNN is $\sim$1000$\times$ faster than
+NeuralLog on Thunderbird.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2 (forward snowball from \cite{landauer2024}).}
+  \item \datasets{Five benchmarks: HDFS, BGL, Thunderbird (in-corpus),
+  Spirit and Liberty (out-of-corpus).}
+  \item \pro{Directly motivates the classical-ML probe family.
+  On Thunderbird, KNN trains roughly three orders of magnitude faster than
+  the deep baselines, illustrating that dataset simplicity and possible
+  leakage can make detection unusually easy.}
+  \item \con{Scope limited to five canonical datasets; no per-dataset
+  decision rule.}
+  \item \usmark{$\bigstar$ Primary: classical-ML baseline and saturation hypothesis.}
+\end{itemize}}
+
+\slrpaper{Le, Zhang (2022) -- Log-Based Anomaly Detection with Deep Learning: How Far Are We?}
+{Van-Hoang Le, Hongyu Zhang}
+{ICSE 2022, pp.\ 1356--1367}
+{Demonstrates 1\% mislabeled logs can drop F1 by $>$35\% on
+LogRobust/CNN. Quantifies parsing-error impact ($\sim$29\% F1
+improvement for SVM when errors are fixed).
+\begin{itemize}[nosep]
+  \item \acq{Channel~2 (backward snowball from \cite{landauer2024}).}
+  \item \datasets{HDFS, BGL, Thunderbird (in-corpus) and Spirit
+  (out-of-corpus).}
+  \item \pro{Provides the label-noise protocol (1\%, 5\%, 10\%)
+  adopted in D3 sensitivity checks.}
+  \item \con{Experiments on HDFS/BGL/Thunderbird/Spirit, the same
+  legacy benchmarks the thesis questions.}
+  \item \usmark{$\bigstar$ Primary: D3 label quality, NeuralLog probe family.}
+\end{itemize}}
+
+\slrpaper{Ali, Boufaied, Bianculli, Branco, Briand (2025) -- A Comprehensive Study of ML for Log-Based AD}
+{Shan Ali, Chaima Boufaied, Domenico Bianculli, Paula Branco, Lionel Briand}
+{Empir.\ Softw.\ Eng.\ 30(5):129, 2025}
+{Evaluates supervised/semi-supervised ML along four axes: detection
+accuracy, training time, prediction time, HP sensitivity. Argues
+semi-supervised methods are underrepresented.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2 (forward snowball from \cite{landauer2024}).}
+  \item \datasets{HDFS, BGL, Thunderbird, Hadoop, OpenStack (in-corpus)
+  and Spirit (out-of-corpus); Loghub benchmarks throughout.}
+  \item \pro{Provides the multi-axis reporting template (Table~4).}
+  \item \con{Still F1-centric; does not link results to dataset
+  properties.}
+  \item \usmark{$\bigstar$ Primary: defines how probe results are reported.}
+\end{itemize}}
+
+\slrpaper{Kenyon, Deka, Elizondo (2020) -- Are Public Intrusion Datasets Fit for Purpose?}
+{A.\ Kenyon, L.\ Deka, D.\ Elizondo}
+{Comput.\ Secur.\ 99:102022, 2020}
+{Surveys intrusion-dataset landscape; identifies representativeness,
+completeness, and labeling as recurring weaknesses.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ5).}
+  \item \pro{Frames the fit-for-purpose question formalized by the
+  thesis. Relative to earlier checklists it compares more datasets and places
+  greater emphasis on provenance and dataset maintenance.}
+  \item \con{Its scoring system is expert-opinion based rather than operational
+  or computable, which is precisely the gap this thesis addresses.}
+  \item \usmark{$\star$ Secondary: motivation and positioning.}
+\end{itemize}}
+
+\slrpaper{Garc\'ia G\'omez, Landauer et al.\ (2026) -- Collaborative Anomaly Detection: Comparative Analysis}
+{Andr\'e Garc\'ia G\'omez, Max Landauer et al.}
+{Future Generation Computer Systems 175:108090, 2025/2026}
+{Extends the fit-for-purpose critique to collaborative log-AD; argues
+HDFS/BGL were not designed for intrusion detection. Positions AIT~v2
+as a more appropriate modern successor.
+\begin{itemize}[nosep]
+  \item \acq{Channel~1 (seed).}
+  \item \datasets{HDFS and AIT-LDS (both in-corpus).}
+  \item \pro{Directly supports AIT-LDS/AIT-ADS as calibration
+  instrument and legacy benchmarks as negative cases.}
+  \item \con{Evaluation remains expert-opinion-based scoring; does not
+  produce a computable decision rule.}
+  \item \usmark{$\bigstar$ Primary: justifies dataset roles.}
+\end{itemize}}
+
+\slrpaper{Gharib, Sharafaldin, Lashkari, Ghorbani (2016) -- An Evaluation Framework for Intrusion Detection Datasets}
+{Amirhossein Gharib, Iman Sharafaldin, Ali Habibi Lashkari, Ali A.\ Ghorbani}
+{ICISS 2016}
+{Proposes 11 criteria for IDS datasets and scores several public
+datasets.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ5).}
+  \item \pro{A historical checklist-style framework whose criteria identify
+  several relevant concerns; the core ideas remain useful.}
+  \item \con{Largely a critique without an operational solution (binary criteria
+  plus a diversity score), and now dated.}
+  \item \usmark{$\star$ Secondary: historical framing.}
+\end{itemize}}
+
+\slrpaper{Shiravi, Shiravi, Tavallaee, Ghorbani (2012) -- Toward Developing a Systematic Approach to Generate Benchmark Datasets for IDS}
+{Ali Shiravi, Hadi Shiravi, Mahbod Tavallaee, Ali A.\ Ghorbani}
+{Comput.\ Secur.\ 31(3):357--374, 2012}
+{Profile-based IDS dataset generation; introduces the ISCX dataset.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ5).}
+  \item \pro{Early precedent for synthetic/generator-based benchmarks.}
+  \item \con{Network-traffic focused; dataset now dated.}
+  \item \usmark{$\circ$ Contextual: synthetic-benchmark lineage.}
+\end{itemize}}
+
+\slrpaper{Creech, Hu (2013) -- Generation of a New IDS Test Dataset: Time to Retire the KDD Collection}
+{Gideon Creech, Jiankun Hu}
+{IEEE WCNC 2013, pp.\ 4487--4492}
+{Introduces ADFA dataset and argues KDD is no longer representative.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ5).}
+  \item \pro{Seminal dataset-retirement argument; cited in \cite{landauer2024} reading
+  notes.}
+  \item \con{ADFA itself is now aged; only marginally applicable to
+  modern log-based security analytics.}
+  \item \usmark{$\circ$ Contextual: historical reference.}
+\end{itemize}}
+
+\slrpaper{Albert (2025) -- System Logs Anomaly Detection: Are We on the Right Path?}
+{Ramona-Georgiana Albert}
+{Survey/opinion, 2025}
+{Position piece questioning progress in log-AD research.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ1).}
+  \item \pro{Reinforces thesis motivation.}
+  \item \con{Non-empirical.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\slrpaper{He, Zhu, He, Lyu (2016) -- Experience Report: System Log Analysis for Anomaly Detection}
+{Shilin He, Jieming Zhu, Pinjia He, Michael R.\ Lyu}
+{ISSRE 2016, pp.\ 207--218}
+{Early systematic comparison of classical AD methods; introduces much
+of the now-standard HDFS session-based framing.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2 (backward snowball from \cite{landauer2024}).}
+  \item \datasets{HDFS, BGL (both in-corpus).}
+  \item \pro{Foundational citation for the session-based HDFS framing.}
+  \item \con{Helped entrench the two benchmarks whose reuse the thesis
+  critiques.}
+  \item \usmark{$\bigstar$ Primary context: motivation for the
+  benchmark-critique strand.}
+\end{itemize}}
+
+%---------------------------
+\subsection{Log Parsing and Its Downstream Effects (6 sources)}
+\label{sec:bg-parsing}
+%---------------------------
+
+Most log-analytics methods do not operate directly on raw lines. A
+preprocessing step called \emph{log parsing} converts each line into a
+\emph{template} (a constant skeleton, e.g.~\code{Connection from <*>
+closed by <*>}) and a parameter list, so that subsequent analyses can
+operate on a finite event vocabulary. Drain~\cite{drain} is the most
+widely used log parser in academic evaluations; its Drain3 extension
+adds persistence and configurable masking but leaves the underlying
+tree algorithm unchanged. Fu et~al.~\cite{fu2023parser} and Jiang et
+al.~\cite{jiang2024loghub2} show that parser choice and template count
+affect downstream AD performance independently of grouping accuracy,
+a finding that motivates the parser-sensitivity robustness axis in the
+thesis. Wu et~al.~\cite{wu2023logrep} compare classical message-count
+vectors, template-ID sequences, and frozen contextual embeddings as
+input representations for downstream AD.
+
+\slrpaper{He, Zhu, Zheng, Lyu (2017) -- Drain: An Online Log Parsing Approach with Fixed Depth Tree}
+{Pinjia He, Jieming Zhu, Zibin Zheng, Michael R.\ Lyu}
+{ICWS 2017, pp.\ 33--40}
+{Fixed-depth parse-tree streaming parser; best-in-class on
+BGL/HDFS/Zookeeper (0.99 each); 51--81\% faster than prior online
+parsers.
+\begin{itemize}[nosep]
+  \item \acq{Channel~1 (foundational seed).}
+  \item \datasets{Five datasets: HDFS, BGL, HPC, Zookeeper, Proxifier
+  (parsing-accuracy evaluation; HDFS/BGL in-corpus).}
+  \item \pro{The de-facto parser in the field; detailed parsing-accuracy and
+  runtime measurements are reported.}
+  \item \con{Heuristic; accuracy drops on parameter-intensive
+  templates (see \cite{jiang2024loghub2}).}
+  \item \usmark{$\bigstar$ Primary: baseline parser for all D1--D5 measurements.}
+\end{itemize}}
+
+\slrpaper{Jiang, Liu, Huang et al.\ (2024) -- A Large-Scale Evaluation for Log Parsing Techniques: How Far Are We?}
+{Zhihan Jiang, Jinyang Liu, Junjie Huang et al.}
+{ISSTA 2024}
+{Re-evaluates 15 parsers on Loghub-2.0 ($\sim$1000$\times$ larger
+than Loghub-2k). All parsers drop in accuracy; Drain strongest for
+grouping; semantic parsers stronger on token/template ID. 9/15 fail
+12-hour timeout.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ2).}
+  \item \datasets{Loghub-2.0 (14 large-scale datasets); counted in the
+  census for HDFS, BGL, Thunderbird, Hadoop, OpenStack, HPC, Proxifier
+  and Zookeeper.}
+  \item \pro{Template-level metrics (FGA/FTA) and parameter-count
+  sensitivity reused in D1. It provides a comprehensive account of Loghub-2.0 limitations and parser
+  behavior.}
+  \item \con{Focus is parsers, not downstream suitability; the
+  coupling is the thesis's contribution.}
+  \item \usmark{$\bigstar$ Primary: D1 metric basis, parser-sensitivity protocol.}
+\end{itemize}}
+
+\slrpaper{Zhang, Jiang, Zhang (2023) -- An Empirical Study of the Impact of Log Parsers on AD}
+{Ying Fu, Meng Yan et al.}
+{Empir.\ Softw.\ Eng.\ 28(6), 2023}
+{Shows high parsing accuracy $\neq$ high AD performance. IPLoM and
+Drain dominate downstream. Number of extracted templates matters
+independently of accuracy.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ2).}
+  \item \datasets{Six Loghub datasets (incl.\ HDFS, BGL, Thunderbird).}
+  \item \pro{Evidence that preprocessing silently dominates reported
+  scores. The study observes that parsing errors are occasionally beneficial and
+  that heuristic parsers are the most suitable overall.}
+  \item \con{Only 6 datasets; help-not-hurt mechanisms not fully
+  unpacked.}
+  \item \usmark{$\bigstar$ Primary: robustness-axis motivation.}
+\end{itemize}}
+
+\slrpaper{Khan, Shin, Bianculli, Briand (2024) -- Impact of Log Parsing on Deep Learning-Based Anomaly Detection}
+{Zanis Ali Khan, Donghwan Shin, Domenico Bianculli, Lionel Briand}
+{Empir.\ Softw.\ Eng., 2024}
+{Confirms parser choice can flip relative DL model ranking.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ2).}
+  \item \datasets{HDFS, Hadoop, BGL, OpenStack (in-corpus).}
+  \item \pro{Reinforces D1/D2 parser-perturbation protocol.}
+  \item \con{Narrow DL focus; overlaps with \cite{fu2023parser}.}
+  \item \usmark{$\star$ Secondary.}
+\end{itemize}}
+
+\slrpaper{Le, Zhang (2021) -- Log-Based Anomaly Detection Without Log Parsing (NeuralLog)}
+{Van-Hoang Le, Hongyu Zhang}
+{ASE 2021}
+{Bypasses the parser: raw logs $\to$ BERT $\to$ Transformer. On HDFS,
+BGL, Thunderbird and Spirit F1 $\geq 0.96$.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2 (second-order snowball from \cite{lezhang2022} via \cite{landauer2024}).}
+  \item \datasets{HDFS, BGL, Thunderbird (in-corpus) and Spirit
+  (out-of-corpus).}
+  \item \pro{Shows semantic embedding carries signal beyond templates,
+  relevant to D5. Correcting parsing errors improved SVM F1 by roughly 29\%.}
+  \item \con{Parser-free pipelines still evaluated on the same legacy
+  benchmarks.}
+  \item \usmark{$\bigstar$ Primary: representation-sensitivity checks for D1 and D5.}
+\end{itemize}}
+
+\slrpaper{Ma, Chen, Kim, Chen, Wang (2024) -- LLMParser}
+{Zeyang Ma, An Ran Chen, Dong Jae Kim et al.}
+{ICSE 2024}
+{Explores LLMs as log parsers; accuracy/cost trade-offs vs.\ Drain.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ2, SQ3).}
+  \item \datasets{Full Loghub-2k suite (incl.\ HDFS, BGL, Thunderbird,
+  OpenStack, Hadoop, Zookeeper, Proxifier; parsing benchmark, no
+  end-to-end AD evaluation).}
+  \item \pro{Enables optional LLM-parser class in parser-sensitivity
+  check.}
+  \item \con{Computational cost and prompt sensitivity may confound.}
+  \item \usmark{$\star$ Secondary: optional parser class.}
+\end{itemize}}
+
+%---------------------------
+\subsection{Anomaly Detection Methods (32 sources)}
+\label{sec:bg-ad}
+%---------------------------
+
+Sequence-based deep learning (DeepLog~\cite{deeplog},
+LogAnomaly~\cite{loganomaly}, LogRobust~\cite{logrobust},
+LogFiT~\cite{logfit}) is the dominant baseline class in published
+evaluations. Yu et~al.~\cite{yu2024dl} compare deep-learning sequence
+detectors with classical machine-learning methods and report that
+classical methods often match or exceed deep models, a finding which,
+together with~\cite{landauer2024}, suggests deep models may be
+exploiting dataset redundancy. Ali et~al.~\cite{ali2025} provide a
+comprehensive multi-axis study under uniform evaluation conditions.
+The earliest sequence-based detectors used $n$-gram and Markov models
+over system-call sequences~\cite{forrest1996,hofmeyr1998}; the thesis
+re-evaluates Markov-order estimation in the context of log templates as
+the D2 probe. Friedberg et~al.~\cite{friedberg2015} address combined
+event correlation for APT detection, foreshadowing D4; Garc\'ia
+G\'omez et~al.~\cite{garcia2025} propose a collaborative AD framework
+evaluated on AIT-LDS that informs parts of the D4 operationalization.
+
+\subsubsection*{Foundational and Classical Methods}
+
+\slrpaper{Forrest, Hofmeyr, Somayaji, Longstaff (1996) -- A Sense of Self for Unix Processes}
+{S.\ Forrest, S.A.\ Hofmeyr, A.\ Somayaji, T.A.\ Longstaff}
+{IEEE S\&P 1996, pp.\ 120--128}
+{Seminal system-call sequence IDS via short-sequence windows.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2 (backward snowball from \cite{landauer2024}).}
+  \item \pro{Originator of the $n$-gram/Markov baseline the
+  statistical/frequency probe uses.}
+  \item \con{Pre-template era; cited for lineage.}
+  \item \usmark{$\bigstar$ Primary: statistical probe lineage.}
+\end{itemize}}
+
+\slrpaper{Hofmeyr, Forrest, Somayaji (1998) -- Intrusion Detection Using Sequences of System Calls}
+{S.A.\ Hofmeyr, S.\ Forrest, A.\ Somayaji}
+{J.\ Comput.\ Secur.\ 6(3):151--180, 1998}
+{Formalized distance measures over system-call sequences.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2 (backward snowball from \cite{forrest1996}).}
+  \item \pro{Historical anchor for Markov/$n$-gram baselines.}
+  \item \con{Pre-template era.}
+  \item \usmark{$\star$ Secondary.}
+\end{itemize}}
+
+\subsubsection*{Deep Sequence-Based AD (Probe Family Methods)}
+
+\slrpaper{Du, Li, Zheng, Srikumar (2017) -- DeepLog}
+{Min Du, Feifei Li, Guineng Zheng, Vivek Srikumar}
+{CCS 2017, pp.\ 1285--1298}
+{LSTM-based log-key + parameter-value sequence AD; HDFS F1
+$\sim$96\%, trained on $<$1\% of normal sessions.
+\begin{itemize}[nosep]
+  \item \acq{Channel~1 (foundational seed).}
+  \item \datasets{HDFS, OpenStack (both in-corpus).}
+  \item \pro{The canonical deep sequential AD baseline; detailed per-dataset
+  performance and online-update results are reported.}
+  \item \con{\cite{landauer2024} argues that much of the reported gap is attributable to
+  dataset leakage.}
+  \item \usmark{$\bigstar$ Primary: sequence probe.}
+\end{itemize}}
+
+\slrpaper{Meng, Liu et al.\ (2019) -- LogAnomaly}
+{Weibin Meng, Ying Liu et al.}
+{IJCAI 2019, pp.\ 4739--4745}
+{Sequential + quantitative AD with template2vec and attention-LSTM.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2 (backward snowball from \cite{landauer2024}).}
+  \item \datasets{HDFS, BGL (both in-corpus).}
+  \item \pro{Representative semantic-sequence family member.}
+  \item \con{Shares benchmark dependency with DeepLog.}
+  \item \usmark{$\bigstar$ Primary: sequence probe.}
+\end{itemize}}
+
+\slrpaper{Zhang et al.\ (2019) -- LogRobust: Robust Log-Based Anomaly Detection on Unstable Log Data}
+{Xu Zhang, Yong Xu et al.}
+{ESEC/FSE 2019, pp.\ 807--817}
+{Bi-LSTM with attention and semantic embeddings for log evolution.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2 (backward snowball from \cite{landauer2024}).}
+  \item \datasets{HDFS (in-corpus), plus a synthetic dataset derived from
+  an industrial system; the original LogRobust evaluation does not use
+  BGL.}
+  \item \pro{Third canonical sequence baseline; central to
+  leakage/label-noise analyses in \cite{lezhang2022}.}
+  \item \con{The ``unstable log'' evaluation is partly circular if the
+  underlying HDFS data already leaks.}
+  \item \usmark{$\bigstar$ Primary: sequence probe.}
+\end{itemize}}
+
+\subsubsection*{Surveys of Log-AD Methods}
+
+\slrpaper{Landauer, Onder et al.\ (2023) -- Deep Learning for Anomaly Detection in Log Data: A Survey}
+{Max Landauer, Sebastian Onder et al.}
+{2023}
+{62-paper survey of DL for log-AD: architectures, representations,
+evaluation practices.
+\begin{itemize}[nosep]
+  \item \acq{Channel~1 (seed).}
+  \item \pro{A comprehensive DL landscape; the survey documents a heavy dependence
+  on HDFS, BGL, Thunderbird and OpenStack and notes that public datasets
+  are frequently reused.}
+  \item \con{Survey-level; no new empirical data.}
+  \item \usmark{$\bigstar$ Primary: landscape map for probe-family selection.}
+\end{itemize}}
+
+\slrpaper{Yadav, Kumar et al.\ (2020) -- A Survey on Log AD Using Deep Learning}
+{Rakesh Bahadur Yadav, P Santosh Kumar et al.}
+{2020}
+{Earlier DL-for-LogAD survey.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ1).}
+  \item \pro{Landscape coverage.}
+  \item \con{Superseded by \cite{logdl_survey} and \cite{ali2025}.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\subsubsection*{Additional AD Methods and Variants}
+
+\slrpaper{Chen, Singh, Rahmani et al.\ (2025) -- $K^4$: Unsupervised Typicality Learning}
+{Weicong Chen, Vikash Singh et al.}
+{IEEE International Conference on High Performance Computing, Data, and Analytics (HiPC) 2025, pp.\ 96--107}
+{Parser-free, unsupervised online LogAD.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2d (forward snowball from Loghub, \cite{loghub2023}).}
+  \item \datasets{Loghub benchmarks (HDFS, BGL, Thunderbird; in-corpus).}
+  \item \pro{Supports unsupervised probe class; aligns with D3
+  concerns.}
+  \item \con{Classical benchmark evaluation.}
+  \item \usmark{$\star$ Secondary.}
+\end{itemize}}
+
+\slrpaper{Chu, Wang et al.\ (2025) -- AD on Interleaved Log Data via Log-Entity Graph Mining}
+{Guojun Chu, Jingyu Wang et al.}
+{2025}
+{Entity-graph perspective on interleaved logs.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ1).}
+  \item \datasets{HDFS, BGL, Thunderbird (Loghub; in-corpus).}
+  \item \pro{Directly related to D4 cross-component structure.}
+  \item \con{Limited dataset scope.}
+  \item \usmark{$\bigstar$ Primary: D4 related-work anchor.}
+\end{itemize}}
+
+\slrpaper{Fu, Lou et al.\ (2009) -- Execution Anomaly Detection in Distributed Systems}
+{Qiang Fu, Jian-Guang Lou et al.}
+{2009}
+{Early pipeline for log-sequence AD on distributed systems.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2 (backward snowball from \cite{logdl_survey}).}
+  \item \datasets{Own pre-Loghub Hadoop-ecosystem collection (plus SILK);
+  counted under the census's Hadoop row (the dataset-usage table of the thesis)
+  although the collection predates the Loghub YARN release -- the same
+  one-row-per-genre convention \cite{xu2009console}'s entry applies to the HDFS-origin
+  logs.}
+  \item \pro{Historical anchor for sequence-AD on real system logs.}
+  \item \con{Pre-DL.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\slrpaper{Chen, Liu et al.\ (2022) -- Experience Report: DL-Based System Log Analysis for AD}
+{Zhuangbin Chen, Jinyang Liu et al.}
+{2022}
+{Comparative empirical report of DL-based log-AD methods.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2 (backward snowball from \cite{logdl_survey}).}
+  \item \datasets{HDFS, BGL (Loghub; in-corpus).}
+  \item \pro{Reproducibility perspective on LogRobust/DeepLog.}
+  \item \con{Summarises results on standard benchmarks.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\slrpaper{FastLogAD -- Lin, Deng et al.\ (2024)}
+{Yifei Lin, Hanqiu Deng et al.}
+{IEEE AITest 2024 invited}
+{Mask-guided pseudo-anomaly generation for discriminative AD.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2d (forward snowball from Loghub, \cite{loghub2023}).}
+  \item \datasets{HDFS, BGL, Thunderbird (Loghub; in-corpus).}
+  \item \pro{Synthetic-anomaly idea relevant to calibration.}
+  \item \con{Short paper; limited scope.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\slrpaper{BERT-LogAnom -- Lu, An et al.\ (2026)}
+{Xi Lu, Shufan An et al.}
+{2026}
+{BiLSTM + gated residual + dynamic thresholding on BERT embeddings.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2d (forward snowball from Loghub, \cite{loghub2023}).}
+  \item \datasets{HDFS, BGL, Thunderbird (Loghub; in-corpus).}
+  \item \pro{Recent representation-driven AD baseline.}
+  \item \con{Incremental over LogRobust/LogAnomaly lineage.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\slrpaper{LogFormer -- Guo, Yang et al.\ (2024)}
+{Hongcheng Guo, Jian Yang et al.}
+{AAAI Conference on Artificial Intelligence 38(1), pp.\ 135--143, 2024}
+{Pre-train + tune for log AD.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2d (forward snowball from Loghub, \cite{loghub2023}).}
+  \item \datasets{BGL, Thunderbird (in-corpus) and Spirit, Liberty
+  (out-of-corpus).}
+  \item \pro{Pre-train/tune pipeline relevant to LM probes.}
+  \item \con{Self-reported overlap reduces independent contribution.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\slrpaper{LayerLog -- Zhang, Wang et al.\ (2023)}
+{Chunkai Zhang, Xinyu Wang et al.}
+{2023}
+{Hierarchical semantic AD on log sequences.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ1).}
+  \item \datasets{HDFS, BGL (Loghub; in-corpus).}
+  \item \pro{Recent hierarchical variant for sequence family.}
+  \item \con{Little new validation on D4/D5.}
+  \item \usmark{$\star$ Secondary.}
+\end{itemize}}
+
+\slrpaper{Ott, Bogatinovski et al.\ (2021) -- Robust and Transferable AD with Pre-Trained LMs}
+{Harold Ott, Jasmin Bogatinovski et al.}
+{2021}
+{Pre-trained-LM-based transferable AD across datasets.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ1).}
+  \item \pro{Motivates D5 representation-sensitivity checks.}
+  \item \con{Transferability claims need re-verification.}
+  \item \usmark{$\star$ Secondary.}
+\end{itemize}}
+
+\slrpaper{Jia, Cai et al.\ (2023) -- Robust and Transferable Log-Based AD}
+{Peng Jia, Shaofeng Cai et al.}
+{2023}
+{Variant of transferable LM-based AD.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ1).}
+  \item \pro{Additional transferability baseline.}
+  \item \con{Similar scope; standard datasets.}
+  \item \usmark{$\star$ Secondary.}
+\end{itemize}}
+
+\slrpaper{Yang, Chen et al.\ (2021) -- Semi-Supervised Log AD via Probabilistic Label Estimation}
+{Lin Yang, Junjie Chen et al.}
+{2021}
+{Probabilistic label estimation for partially labeled logs.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ1).}
+  \item \datasets{HDFS, BGL (Loghub; in-corpus).}
+  \item \pro{Relevant to D3 label quality and noise tolerance.}
+  \item \con{Specific estimation assumptions.}
+  \item \usmark{$\star$ Secondary.}
+\end{itemize}}
+
+\slrpaper{Wurzenberger, Skopik et al.\ (2017) -- Incremental Clustering for Semi-Supervised AD on Log Data}
+{Markus Wurzenberger, Florian Skopik et al.}
+{2017}
+{Incremental clustering for semi-supervised log AD.
+\begin{itemize}[nosep]
+  \item \acq{Channel~1 (seed).}
+  \item \datasets{AIT / AECID log data (in-corpus AIT-LDS family).}
+  \item \pro{Semi-supervised probe candidate.}
+  \item \con{Specific to AECID family.}
+  \item \usmark{$\star$ Secondary.}
+\end{itemize}}
+
+\slrpaper{Beck, Landauer et al.\ (2024) -- Semi-Supervised Configuration and Optimization of AD}
+{Viktor Beck, Max Landauer et al.}
+{2024}
+{Automated tuning for semi-supervised log-AD.
+\begin{itemize}[nosep]
+  \item \acq{Channel~1 (seed).}
+  \item \datasets{AIT-LDS / AECID scenarios (incl.\ Russell Mitchell,
+  Harrison, Fox; the AIT-LDS family is in-corpus).}
+  \item \pro{Addresses HP-sensitivity axis from \cite{ali2025}.}
+  \item \con{Ties to AECID stack.}
+  \item \usmark{$\star$ Secondary.}
+\end{itemize}}
+
+\slrpaper{Alam, Kifayat et al.\ (2024) -- SXAD: Shapely eXplainable AI-Based AD Using Log Data (sic)}
+{Kashif Alam, Kashif Kifayat et al.}
+{2024}
+{Shapley-value explainability on log-AD outputs.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ1).}
+  \item \datasets{HDFS (Loghub; in-corpus).}
+  \item \pro{Supporting citation for interpretation class.}
+  \item \con{Post-hoc explainability, not dataset-centric.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\slrpaper{Wang, Zhao et al.\ (2020) -- Root-Cause Metric Location for Microservices via Log AD}
+{Lingzhi Wang, Nengwen Zhao et al.}
+{2020}
+{Microservice RCA via log-AD signals.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ1).}
+  \item \pro{Supporting citation for RCA application class.}
+  \item \con{Metrics component outside thesis scope.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\slrpaper{Remaining contextual AD sources}
+{Various authors}
+{Various venues}
+{Narrow-domain AD papers: access-log AD~\cite{accessloganom}, deep-log modeling~\cite{advlog_deeplogmodel}, application-log AD (\cite{applogdata}, MSc thesis), Hadoop-ecosystem AD~\cite{bigloghadoop}, server-log case study~\cite{serverlog_casestudy}, NLP-based log AD~\cite{nlplog}, federated
+log AD~\cite{fedlightweight,fedlog_openchallenges}, physical-access-control AD~\cite{behavioraccess}, and
+smart-contract AD~\cite{logsentry}.
+\begin{itemize}[nosep]
+  \item \acq{Channel~1~\cite{fedlog_openchallenges,behavioraccess}; Channel~2d (\cite{advlog_deeplogmodel,logsentry} -- forward
+  snowball from Loghub, \cite{loghub2023}); Channel~3/SQ1 (remainder).}
+  \item \datasets{The standard Loghub benchmarks, per source: \cite{advlog_deeplogmodel} (HDFS,
+  BGL, Thunderbird, Spirit), \cite{applogdata} (HDFS, BGL), \cite{nlplog} (BGL), \cite{fedlog_openchallenges} (HDFS),
+  \cite{fedlightweight} (HDFS, Thunderbird); a Hadoop-ecosystem dataset~\cite{bigloghadoop}; and
+  domain-specific collections outside the ranked record datasets (web
+  access logs \cite{accessloganom}, server logs \cite{serverlog_casestudy}, physical-access logs \cite{behavioraccess},
+  smart-contract logs \cite{logsentry}). The Loghub-benchmark uses are tallied
+  individually in the dataset-usage table of the thesis; the domain-specific
+  collections are not counted there.}
+  \item \pro{Illustrate breadth of log-AD application; \cite{fedlog_openchallenges,behavioraccess} from
+  the seeds provide AECID cross-domain evidence.}
+  \item \con{Narrow settings; \cite{logsentry} is outside scope.}
+  \item \usmark{$\circ$ Contextual (\cite{fedlog_openchallenges,behavioraccess} = $\star$ Secondary).
+  \cite{logsentry} = $\times$ Excluded.}
+\end{itemize}}
+
+%---------------------------
+\subsection{LLM-Based Log Analysis (12 sources)}
+%---------------------------
+
+LLM-based approaches to log analysis have grown rapidly since 2023.
+LogGPT~\cite{loggpt}, LogFiT~\cite{logfit}, and the survey by Akhtar
+et~al.~\cite{akhtar2025} cover the landscape; Ma et~al.~\cite{llmparser}
+document prompt sensitivity and hallucinations in LLM-based log parsing.
+Wang et~al.~\cite{wang2025} provide a broader AI-driven log-analysis
+survey.
+
+\slrpaper{Qi, Huang, Luan et al.\ (2023) -- LogGPT: Exploring ChatGPT for Log-Based Anomaly Detection}
+{Jiaxing Qi, Shaohan Huang, Zhongzhi Luan et al.}
+{IEEE HPCC/DSS/SmartCity 2023}
+{First ChatGPT-based log-AD framework (zero/few-shot) on BGL and
+Spirit subset. Identifies prompt sensitivity, limited window, high
+FP rate, hallucination.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ3).}
+  \item \datasets{BGL (in-corpus) and a Spirit subset (out-of-corpus).}
+  \item \pro{Enumerates failure modes the LLM-interpretation rubric
+  (future work, the future-work section of the thesis) operationalises.
+  Its main contributions are the prompt-design exploration and
+  interpretability analysis; its key weaknesses are a high false-positive
+  rate and hallucination.}
+  \item \con{Sampled Spirit subset limits statistical reliability.}
+  \item \usmark{$\bigstar$ Primary: anchors the LLM-interpretation prompt-variant rubric.}
+\end{itemize}}
+
+\slrpaper{Akhtar, Khan, Parkinson -- LLM-Based Event Log Analysis Techniques: A Survey}
+{Siraaj Akhtar, Saad Khan, Simon Parkinson}
+{arXiv:2502.00677 (GL)}
+{Survey of LLM-based log-analysis approaches.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ3).}
+  \item \pro{Landscape citation for the LLM-interpretation strand.}
+  \item \con{Survey-level; does not measure semantic sufficiency.}
+  \item \usmark{$\bigstar$ Primary: LLM-interpretation landscape.}
+\end{itemize}}
+
+\slrpaper{Wang, Gan, Yu (2025) -- AI-Driven Log Analysis: Advances and Challenges}
+{Yongheng Wang, Wensheng Gan, Philip S.\ Yu}
+{IEEE BigData 2025}
+{Broader AI-driven log analysis survey.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ3).}
+  \item \pro{Broader coverage including non-LLM AI.}
+  \item \con{High-level; no new data.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\slrpaper{Almod\'ovar, Sabrina, Karimi, Azad (2024) -- LogFiT}
+{Crispin Almodovar, Fariza Sabrina et al.}
+{IEEE Trans.\ Netw.\ Serv.\ Manag., 2024}
+{Fine-tuned LM for log AD.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2d (forward snowball from Loghub, \cite{loghub2023}).}
+  \item \datasets{HDFS, BGL, Thunderbird (Loghub; all in-corpus).}
+  \item \pro{Fine-tuned-LM branch of semantic probes.}
+  \item \con{Fine-tuning on the legacy benchmarks inherits their
+  documented issues.}
+  \item \usmark{$\star$ Secondary.}
+\end{itemize}}
+
+\slrpaper{Yang, Harris (2025) -- LogLLaMA}
+{Zhuoyi Yang, Ian G.\ Harris}
+{arXiv:2503.14849 (GL)}
+{LLaMA2 fine-tuned on normal logs + RL for AD on BGL/TB/HDFS.
+\begin{itemize}[nosep]
+  \item \acq{Channel~1 (foundational seed).}
+  \item \datasets{BGL, Thunderbird, HDFS (Loghub; all in-corpus).}
+  \item \pro{Modern LLM baseline for the interpretation strand;
+  representative recent LLM-based detector.}
+  \item \con{Preprint; canonical benchmarks only.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\slrpaper{Guan, Cao et al.\ (2025) -- LogLLM}
+{Wei Guan, Jian Cao et al.}
+{arXiv preprint (GL)}
+{BERT + LLaMA with projector; regex preprocessing instead of parser.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2d (forward snowball from Loghub, \cite{loghub2023}).}
+  \item \datasets{HDFS, BGL, Thunderbird (in-corpus) and Liberty
+  (out-of-corpus).}
+  \item \pro{Parser-free LLM pipeline relevant to D1/D5 sensitivity.}
+  \item \con{Overlaps with LogFiT/LogLLaMA family.}
+  \item \usmark{$\star$ Secondary.}
+\end{itemize}}
+
+\slrpaper{Huang, Zhang et al.\ -- LogRules}
+{Xin Huang, Ting Zhang et al.}
+{Preprint (GL)}
+{Rule-augmented LLM for log analysis.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2d (forward snowball from Loghub, \cite{loghub2023}).}
+  \item \datasets{Full Loghub-2k suite: HDFS, BGL, Thunderbird,
+  OpenStack, Hadoop (in-corpus) and Spirit (out-of-corpus).}
+  \item \pro{Prompt-engineering variant useful for the LLM prompt-variant
+  axis.}
+  \item \con{Limited reproducibility data.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\slrpaper{Reis, Areias et al.\ -- LLM Framework for Log Sequence AD}
+{Jo\~ao Reis, Miguel Areias et al.}
+{Progress in Artificial Intelligence (EPIA), LNCS, Springer, 2025, pp.\ 324--334}
+{Generic LLM framework for log-sequence AD.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2d (forward snowball from Loghub, \cite{loghub2023}).}
+  \item \datasets{Loghub benchmarks (HDFS, BGL, Thunderbird; in-corpus).}
+  \item \pro{Landscape coverage.}
+  \item \con{Limited novelty.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\slrpaper{Zhu, Cui et al.\ (2025) -- LLM with Semantic Compression for Log AD}
+{Xiangyu Zhu, Wenhua Cui et al.}
+{2025}
+{Semantic compression to handle long-context log sequences for LLMs.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2d (forward snowball from Loghub, \cite{loghub2023}).}
+  \item \datasets{Loghub benchmarks (HDFS, BGL, Thunderbird; in-corpus).}
+  \item \pro{Addresses LLM context-window limitation identified in
+  \cite{loggpt}.}
+  \item \con{Does not evaluate semantic sufficiency of underlying
+  data.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\slrpaper{Hadadi, Xu et al.\ (2025) -- LLM Meets ML: Data-Efficient AD on Unstable Logs}
+{Fatemeh Hadadi, Qinghua Xu et al.}
+{2025}
+{Combines classical ML with LLM signals.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ1, SQ3).}
+  \item \datasets{HDFS (unstable-log AD benchmark; in-corpus).}
+  \item \pro{Relevant to D3 noise tolerance.}
+  \item \con{Narrow scope.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\slrpaper{Yu, Zhang et al.\ (2024) -- What Makes a High-Quality Training Dataset for LLMs}
+{Xiao Yu, Zexian Zhang et al.}
+{ASE 2024, pp.\ 656--668}
+{Developer-survey study of LLM-training-data quality practices.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ4).}
+  \item \pro{Practitioner views on DQ for LLMs; complements
+  Kapoor/Narayanan for the LLM-interpretation framing.}
+  \item \con{Not log-specific.}
+  \item \usmark{$\star$ Secondary.}
+\end{itemize}}
+
+\slrpaper{Ma, Chen, Kim, Chen, Wang (2024) -- LLMParser}
+{Zeyang Ma, An Ran Chen, Dong Jae Kim et al.}
+{ICSE 2024}
+{Explores LLMs as log parsers; accuracy/cost trade-offs vs.\ Drain.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ2, SQ3).}
+  \item \datasets{Full Loghub-2k suite (incl.\ HDFS, BGL, Thunderbird,
+  OpenStack, Hadoop, Zookeeper, Proxifier; parsing benchmark, no
+  end-to-end AD evaluation).}
+  \item \pro{Enables optional LLM-parser class; documents prompt
+  sensitivity and hallucinations.}
+  \item \con{Cost and prompt sensitivity may confound comparisons.}
+  \item \usmark{$\star$ Secondary: optional parser class.}
+\end{itemize}}
+
+%---------------------------
+\subsection{Data-Quality Frameworks (10 sources)}
+\label{sec:bg-dq}
+%---------------------------
+
+The Wang--Strong taxonomy~\cite{wang1996} organises data-quality
+dimensions into intrinsic (accuracy, consistency), contextual
+(timeliness, completeness), representational (interpretability,
+conciseness) and accessibility categories. Subsequent
+surveys~\cite{batini2009,gong2023,zhou2024} consolidate the
+literature. The METRIC framework~\cite{schwabe2024} specialises DQ
+dimensions for medical AI datasets, providing a methodological
+precedent for log-domain instantiation: dimensions are not invented
+from scratch but selected from an established catalog and adapted to
+domain-specific failure modes. This thesis follows the same approach.
+Kapoor and Narayanan~\cite{kapoor2023} provide a taxonomy of eight
+leakage types in ML-based science, used in this thesis to organise the
+D3 and D4 robustness checks.
+
+\slrpaper{Wang, Strong (1996) -- Beyond Accuracy: What Data Quality Means to Data Consumers}
+{Richard Y.\ Wang, Diane M.\ Strong}
+{J.\ Manag.\ Inf.\ Syst.\ 12(4):5--33, 1996}
+{Classical DQ taxonomy: intrinsic, contextual, representational,
+accessibility.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ4).}
+  \item \pro{Root framework; every D1--D5 dimension is anchored here.}
+  \item \con{General-purpose; log specialization is the thesis's job.}
+  \item \usmark{$\bigstar$ Primary: methodological anchor.}
+\end{itemize}}
+
+\slrpaper{Schwabe, Becker, Seyferth, Kla\ss, Sch\"affter (2024) -- METRIC-Framework for Assessing DQ for Trustworthy AI in Medicine}
+{Daniel Schwabe, Katinka Becker et al.}
+{npj Digit.\ Med.\ 7(1):203, 2024}
+{Domain-specialised DQ framework via PRISMA review for medical AI.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ4).}
+  \item \pro{Structural template: shows how general DQ $\to$
+  domain-specific dimensions via SLR.}
+  \item \con{Medical-specific; domain details not transferable.}
+  \item \usmark{$\bigstar$ Primary: methodological template.}
+\end{itemize}}
+
+\slrpaper{Zhou, Tu, Sha, Ding, Chen (2024) -- Survey on DQ Dimensions and Tools for ML}
+{Yuhan Zhou, Fengjiao Tu et al.}
+{arXiv:2406.19614; IEEE AITest 2024 invited (GL)}
+{Catalogs DQ dimensions and tools for ML.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ4).}
+  \item \pro{Expanded DQ vocabulary used in D1--D5 anchoring.}
+  \item \con{No log-specific instantiation.}
+  \item \usmark{$\bigstar$ Primary: DQ vocabulary.}
+\end{itemize}}
+
+\slrpaper{Gong, Liu, Xue, Li, Meng (2023) -- Survey on Dataset Quality in ML}
+{Youdi Gong, Guangzhen Liu et al.}
+{Inf.\ Softw.\ Technol.\ 162:107268, 2023}
+{Lifecycle-oriented DQ survey.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ4).}
+  \item \pro{Lifecycle angle on DQ.}
+  \item \con{General-purpose.}
+  \item \usmark{$\star$ Secondary.}
+\end{itemize}}
+
+\slrpaper{Kapoor, Narayanan (2023) -- Leakage and the Reproducibility Crisis in ML-Based Science}
+{Sayash Kapoor, Arvind Narayanan}
+{Patterns 4(9):100804, 2023}
+{Formal 8-category leakage taxonomy for ML research.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ7).}
+  \item \pro{Directly structures the leakage checks; each category
+  maps to a log-data check.}
+  \item \con{General ML; log instantiation contributed by thesis.}
+  \item \usmark{$\bigstar$ Primary: leakage taxonomy backbone.}
+\end{itemize}}
+
+\slrpaper{Jayawardene, Sadiq et al.\ -- An Analysis of Data Quality Dimensions}
+{Vimukthi Jayawardene, Shazia Sadiq et al.}
+{Technical report}
+{Dimension-level DQ analysis.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ4).}
+  \item \pro{Supplementary reference.}
+  \item \con{Not widely cited.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\slrpaper{Batini, Cappiello, Francalanci, Maurino (2009) -- Methodologies for DQ Assessment and Improvement}
+{Carlo Batini, Cinzia Cappiello et al.}
+{ACM Comput.\ Surv.\ 41(3):1--52, 2009}
+{Comprehensive DQ methodology survey.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ4).}
+  \item \pro{Broad coverage; good for placing D1--D5 in a well-known
+  landscape.}
+  \item \con{Pre-ML era.}
+  \item \usmark{$\bigstar$ Primary: DQ framing.}
+\end{itemize}}
+
+\slrpaper{Picard, Chapdelaine et al.\ (2020) -- Ensuring Dataset Quality for ML Certification}
+{S.\ Picard, C.\ Chapdelaine et al.}
+{2020}
+{Certification-oriented DQ criteria.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ4).}
+  \item \pro{Certification angle useful for reasoning about datasets
+  whose quality cannot be conclusively judged either way.}
+  \item \con{Embedded/safety-critical ML, not security analytics.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\slrpaper{Chen, Chen et al.\ (2021) -- Data Evaluation and Enhancement for Quality Improvement of ML}
+{Haihua Chen, Jiangping Chen et al.}
+{2021}
+{DQ improvement techniques.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ4).}
+  \item \pro{Improvement-side perspective.}
+  \item \con{Out of scope for assessment.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\slrpaper{Zhao, Chen et al.\ (2020) -- On the Role of Dataset Quality and Heterogeneity in Model Confidence}
+{Yuan Zhao, Jiasi Chen et al.}
+{2020}
+{Empirical study of DQ and heterogeneity effects on model confidence.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ4).}
+  \item \pro{Supports the thesis's core claim that measurable dataset
+  properties drive model behavior.}
+  \item \con{Vision/tabular-oriented; log reinterpretation needed.}
+  \item \usmark{$\star$ Secondary.}
+\end{itemize}}
+
+%---------------------------
+\subsection{Statistical and Information-Theoretic Tools (9 sources)}
+%---------------------------
+
+\slrpaper{Shannon (1948) -- A Mathematical Theory of Communication}
+{Claude E.\ Shannon}
+{Bell Syst.\ Tech.\ J.\ 27(3):379--423, 1948}
+{Defines entropy and mutual information.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2 (backward snowball from \cite{landauer2024}).}
+  \item \pro{Foundation for D1 entropy and D2 mutual-information
+  metrics.}
+  \item \usmark{$\bigstar$ Primary: foundational.}
+\end{itemize}}
+
+\slrpaper{Cover, Thomas (2006) -- Elements of Information Theory, 2nd ed.}
+{Thomas M.\ Cover, Joy A.\ Thomas}
+{Wiley-Interscience, 2006}
+{Canonical textbook for MI, conditional MI, transition entropy.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ12 / supplementary).}
+  \item \pro{Reference for D2 metrics.}
+  \item \usmark{$\bigstar$ Primary: textbook reference.}
+\end{itemize}}
+
+\slrpaper{Gini (1912); Yitzhaki, Schechtman (2013) -- Gini Coefficient}
+{C.\ Gini; S.\ Yitzhaki, E.\ Schechtman}
+{Book / Springer 2013}
+{Classical inequality measure.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ13 / supplementary).}
+  \item \pro{Complements Shannon entropy in D1.}
+  \item \usmark{$\bigstar$ Primary: D1 metric.}
+\end{itemize}}
+
+\slrpaper{Tangirala (2020) -- Evaluating the Impact of Gini Index and Information Gain on Classification}
+{Suryakanthi Tangirala}
+{2020}
+{Empirical Gini vs.\ information-gain comparison.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ13).}
+  \item \pro{Sanity check for D1 Gini choice.}
+  \item \con{Decision-tree specific.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\slrpaper{Papapetrou, Kugiumtzis (2013) -- Markov Chain Order Estimation with Conditional MI}
+{Maria Papapetrou, Dimitris Kugiumtzis}
+{Physica A 392(7):1593--1601, 2013}
+{Conditional-MI-based Markov-order estimation.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ12).}
+  \item \pro{Direct method reference for D2 Markov-order analysis.}
+  \item \con{Small-scale; scalability on log datasets must be
+  verified.}
+  \item \usmark{$\bigstar$ Primary: D2 metric.}
+\end{itemize}}
+
+\slrpaper{Peng, Wang, Deng (2023) -- Near-Duplicate Sequence Search at Scale for LLM Memorization Evaluation}
+{Zhencan Peng, Zhizhi Wang, Dong Deng}
+{2023}
+{Scalable MinHash/LSH near-duplicate search for LLM sets.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ11).}
+  \item \pro{Scalable MinHash/LSH back-end for D1 near-duplicate
+  detection.}
+  \item \con{LLM-corpus setting; parameter tuning for log sequences
+  needed.}
+  \item \usmark{$\bigstar$ Primary: D1 implementation.}
+\end{itemize}}
+
+\slrpaper{Lee et al.\ (2022) -- Deduplicating Training Data Makes Language Models Better}
+{Katherine Lee, Daphne Ippolito et al.}
+{ACL 2022}
+{Empirical impact of deduplication; popularises MinHash/LSH.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ11).}
+  \item \pro{Precedent for D1 dedup methodology.}
+  \item \con{NLP-specific.}
+  \item \usmark{$\bigstar$ Primary: methodology precedent.}
+\end{itemize}}
+
+\slrpaper{Wurzenberger, H\"old, Landauer, Skopik (2024) -- Statistical Properties of Variables in Log Data}
+{Markus Wurzenberger, Georg H\"old, Max Landauer, Florian Skopik}
+{Comput.\ Secur.\ 137:103631, 2024}
+{Statistical-property analysis of log-parameter values for AD.
+\begin{itemize}[nosep]
+  \item \acq{Channel~1 (seed).}
+  \item \datasets{AIT-LDS / AECID testbed scenarios (in-corpus).}
+  \item \pro{Direct basis for parameter-variability metrics in D1 and
+  parameter-context coupling in D5.}
+  \item \con{Single-family; cross-validation on non-AECID-parsed data
+  needed.}
+  \item \usmark{$\bigstar$ Primary: D1/D5 metrics.}
+\end{itemize}}
+
+\slrpaper{Kenyon, Deka et al.\ -- Characterising Payload Entropy in Packet Flows}
+{Anthony Kenyon, Lipika Deka et al.}
+{Journal}
+{Entropy baselines for network payloads.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ13).}
+  \item \pro{Supporting entropy-methodology reference.}
+  \item \con{Packet focus, not log.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+%---------------------------
+\subsection{Provenance, CTI, IDS Methodology and Cross-Component Structure (8 sources)}
+%---------------------------
+
+\slrpaper{Friedberg, Skopik, Settanni, Fiedler (2015) -- Combating APTs: Event Correlation to Incident Detection}
+{Ivo Friedberg, Florian Skopik, Giuseppe Settanni, Roman Fiedler}
+{Comput.\ Secur.\ 48:35--57, 2015}
+{Cross-component event-correlation for APT detection.
+\begin{itemize}[nosep]
+  \item \acq{Channel~1 (seed).}
+  \item \datasets{AIT / AECID event logs (in-corpus AIT-LDS family).}
+  \item \pro{Direct precedent for D4 motif-stability; provides the
+  motif-mining approach.}
+  \item \con{APT-focused; generalization to RCA needed.}
+  \item \usmark{$\bigstar$ Primary: D4 methodology.}
+\end{itemize}}
+
+\slrpaper{Agrawal, Imieli\'nski, Swami (1993) -- Mining Association Rules}
+{R.\ Agrawal, T.\ Imieli\'nski, A.\ Swami}
+{ACM SIGMOD 1993, pp.\ 207--216}
+{Classical support/confidence for association-rule mining.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2 (backward snowball from \cite{friedberg2015}).}
+  \item \pro{Support/confidence measures used in D4 motif stability.}
+  \item \con{Classical; log adaptation required.}
+  \item \usmark{$\bigstar$ Primary: D4 metrics.}
+\end{itemize}}
+
+\slrpaper{Zipperle, Gottwalt et al.\ (2023) -- Provenance-Based IDS: A Survey}
+{Michael Zipperle, Florian Gottwalt et al.}
+{2023}
+{Survey of provenance-graph IDS.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ6).}
+  \item \pro{Justifies including the DARPA TC provenance datasets
+  (CADETS, THEIA) and motivates D4 as a domain-specific dimension.}
+  \item \con{Provenance-graph focus; log adaptation needed.}
+  \item \usmark{$\bigstar$ Primary: D4 related work.}
+\end{itemize}}
+
+\slrpaper{Inam, Chen, Goyal et al.\ (2023) -- SoK: Provenance of System Intrusions}
+{M.A.\ Inam, Y.\ Chen, A.\ Goyal et al.}
+{IEEE S\&P 2023, pp.\ 2620--2638}
+{Systematization of knowledge on audit-based provenance IDS.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ6 / citation follow-up from ATLASv2).}
+  \item \pro{Sets state of the art in provenance IDS; supports D4.}
+  \item \con{Provenance focus; log-AD is the fallback when D4 is
+  uncertain.}
+  \item \usmark{$\bigstar$ Primary: D4 SoK.}
+\end{itemize}}
+
+\slrpaper{Strom, Applebaum et al.\ (2018) -- MITRE ATT\&CK: Design and Philosophy}
+{Blake E.\ Strom, Andy Applebaum et al.}
+{MITRE Tech.\ Report (GL)}
+{Design rationale of ATT\&CK.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ9).}
+  \item \pro{Anchor for CTI/ATT\&CK application class.}
+  \item \con{Not peer-reviewed; version pinning needed.}
+  \item \usmark{$\bigstar$ Primary: CTI application class.}
+\end{itemize}}
+
+\slrpaper{Applebaum, Miller et al.\ (2016) -- Intelligent, Automated Red Team Emulation (CALDERA)}
+{Andy Applebaum, Doug Miller et al.}
+{2016}
+{Automated adversary emulation.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ9).}
+  \item \pro{Supports adversary-emulation justification.}
+  \item \con{Tool paper; contextual.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\slrpaper{Landauer, Skopik et al.\ (2025) -- A Review of Time-Series Analysis for Cyber Security Analytics}
+{Max Landauer, Florian Skopik et al.}
+{2025}
+{Survey of time-series methods for cyber-security analytics.
+\begin{itemize}[nosep]
+  \item \acq{Channel~1 (seed).}
+  \item \pro{Broadens D2 temporal methodology.}
+  \item \con{Not log-specific throughout.}
+  \item \usmark{$\star$ Secondary: D2 breadth reference.}
+\end{itemize}}
+
+\slrpaper{Hus\'ak, Bajto\v{s} et al.\ (2020) -- Predictive Cyber Situational Awareness via Sequential Rule Mining}
+{Martin Hus\'ak, Tom\'a\v{s} Bajto\v{s} et al.}
+{2020}
+{Predictive blacklisting from 12M IDS alerts via sequential rule
+mining.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ13).}
+  \item \pro{Practical precedent for sequence mining on security data.}
+  \item \con{Operates on alert streams, not log events:
+  \textbf{outside thesis scope}.}
+  \item \usmark{$\times$ Excluded: alerts are out of scope (EC1).}
+\end{itemize}}
+
+%---------------------------
+\subsection{Log Representation (2 sources)}
+%---------------------------
+
+Wu et~al.~\cite{wu2023logrep} compare classical message-count vectors,
+template-ID sequences, and frozen contextual embeddings as input
+representations for downstream AD, showing that representation choice
+interacts with dataset properties, directly informing D5.
+
+\slrpaper{Wu, Li, Khomh (2023) -- On the Effectiveness of Log Representation for Log-Based AD}
+{Xingfang Wu, Heng Li, Foutse Khomh}
+{Empir.\ Softw.\ Eng.\ 28(6):137, 2023}
+{Systematic comparison of 6 log representations across 7 ML models.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ10).}
+  \item \datasets{HDFS, BGL, Thunderbird (in-corpus) and Spirit
+  (out-of-corpus).}
+  \item \pro{Shows representation choice interacts with dataset
+  properties. No single representation is universally best: message-count vectors work
+  best for sequential deep models, while BERT gives the strongest semantic
+  representation.}
+  \item \con{Does not link to dataset-centric D5 assessment.}
+  \item \usmark{$\bigstar$ Primary: D5 representation sensitivity.}
+\end{itemize}}
+
+\slrpaper{Landauer, Wurzenberger et al.\ (2023) -- AMiner: Modular Log Data Analysis Pipeline}
+{Max Landauer, Markus Wurzenberger et al.}
+{2023}
+{AECID-lineage modular pipeline.
+\begin{itemize}[nosep]
+  \item \acq{Channel~1 (seed).}
+  \item \pro{Reference for reproducible modular pipeline.}
+  \item \con{Tool-oriented.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+%---------------------------
+\subsection{Datasets: Calibration, Primary, Legacy, Survey-Only (7 sources)}
+%---------------------------
+
+\slrpaper{Landauer, Skopik et al.\ (2021) -- Have It Your Way: AIT-LDS}
+{Max Landauer, Florian Skopik, Markus Wurzenberger et al.}
+{IEEE Trans.\ Reliab.\ 70(1):402--415, 2021}
+{Model-driven simulation testbed for customisable log datasets.
+\begin{itemize}[nosep]
+  \item \acq{Channel~1 (seed).}
+  \item \datasets{Introduces AIT-LDS (the Russell Mitchell, Santos and
+  Wilson scenarios profiled and used for calibration in this thesis).}
+  \item \pro{The calibration instrument: ground-truth properties are
+  known and configurable.}
+  \item \con{Simulated; transfer gap must be analyzed.}
+  \item \usmark{$\bigstar$ Primary: calibration backbone.}
+\end{itemize}}
+
+\slrpaper{Landauer, Skopik et al.\ (2023) -- Maintainable Log Datasets for Evaluation of IDS (AIT-ADS)}
+{Max Landauer, Florian Skopik, Maximilian Frank et al.}
+{IEEE TDSC 20(4):3466--3482, 2023}
+{Extends AIT-LDS toward reproducible maintenance and richer attack
+coverage.
+\begin{itemize}[nosep]
+  \item \acq{Channel~1 (seed).}
+  \item \datasets{Introduces AIT-ADS (maintainable extension of the
+  AIT-LDS simulation lineage).}
+  \item \pro{Second calibration dataset; cross-configuration
+  robustness.}
+  \item \con{Same simulation lineage.}
+  \item \usmark{$\bigstar$ Primary: calibration.}
+\end{itemize}}
+
+\slrpaper{Zhu, He, He, Liu, Lyu (2023) -- Loghub}
+{Jieming Zhu, Shilin He et al.}
+{ISSRE 2023, pp.\ 355--366 (GL: github.com/logpai/loghub)}
+{Aggregator of 19 log datasets (HDFS, Hadoop, OpenStack, BGL,
+Thunderbird, \ldots).
+\begin{itemize}[nosep]
+  \item \acq{Channel~1 (foundational seed).}
+  \item \datasets{Aggregates 19 log datasets, incl.\ HDFS, Hadoop,
+  OpenStack, BGL, Thunderbird (the legacy-benchmark source for this
+  thesis).}
+  \item \pro{Reference for legacy-baseline datasets.}
+  \item \con{Source of the benchmarks whose reuse the thesis
+  critiques.}
+  \item \usmark{$\bigstar$ Primary: legacy baseline source.}
+\end{itemize}}
+
+\slrpaper{Oliner, Stearley (2007) -- What Supercomputers Say}
+{Adam Oliner, Jon Stearley}
+{DSN 2007, pp.\ 575--584}
+{Classic study of BGL, Red Storm, Thunderbird, Spirit, Liberty.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2 (backward snowball from \cite{landauer2024}).}
+  \item \datasets{BGL, Red Storm, Thunderbird, Spirit, Liberty (the
+  original CFDR supercomputer logs; BGL and Thunderbird are in-corpus).}
+  \item \pro{Provenance for BGL/Thunderbird (CFDR).}
+  \item \con{Fault-diagnosis, not security: exactly the mismatch
+  problem.}
+  \item \usmark{$\bigstar$ Primary: legacy baseline provenance.}
+\end{itemize}}
+
+\slrpaper{Schroeder, Gibson (2006) -- A Large-Scale Study of Failures in HPC Systems}
+{B.\ Schroeder, G.A.\ Gibson}
+{DSN 2006, pp.\ 249--258}
+{Failure characterization on HPC.
+\begin{itemize}[nosep]
+  \item \acq{Channel~2 (backward snowball from \cite{landauer2024}).}
+  \item \datasets{LANL HPC failure records (22 systems, CFDR; reliability
+  data, out-of-corpus).}
+  \item \pro{Background on what BGL/TB labels actually represent
+  (failures, not attacks).}
+  \item \con{Not a security paper; underlines label-target mismatch.}
+  \item \usmark{$\circ$ Contextual.}
+\end{itemize}}
+
+\slrpaper{Landauer, Hotwagner et al.\ (2026) -- CAM-LDS: Cyber Attack Manifestations}
+{Max Landauer, Wolfgang Hotwagner et al.}
+{2026}
+{Dataset emphasising attack manifestations with semantic annotations.
+\begin{itemize}[nosep]
+  \item \acq{Channel~1 (seed).}
+  \item \datasets{Introduces CAM-LDS (the seven attack-scenario groups
+  S1--S7 profiled in this thesis).}
+  \item \pro{Potential D5-rich extension dataset.}
+  \item \con{Very recent; not yet widely validated.}
+  \item \usmark{$\star$ Secondary: potential extension.}
+\end{itemize}}
+
+\slrpaper{NIST SP 800-92 (Kent, Souppaya, 2006) -- Guide to Computer Security Log Management}
+{Karen Kent, Murugiah Souppaya}
+{NIST SP 800-92, 2006 (GL)}
+{Authoritative log-management terminology.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ13 / targeted search).}
+  \item \pro{Anchor for log/telemetry/alerts definitions.}
+  \item \con{Operational guide, not research.}
+  \item \usmark{$\bigstar$ Primary: terminology anchor.}
+\end{itemize}}
+
+\textbf{Note:} Dataset-specific sources referenced in the thesis
+(DARPA TC CADETS/THEIA, ATLASv2, UWF-ZeekData22, COMISET~\cite{comiset}, Mordor/OTRF) are
+accessed through public repositories and are not counted in the
+93-source total, as they entered the thesis through direct dataset
+acquisition rather than the literature-review process.
+
+%---------------------------
+\subsection{SLR Methodology (3 sources)}
+%---------------------------
+
+\slrpaper{Kitchenham, Charters (2007) -- Guidelines for Performing Systematic Literature Reviews in SE}
+{Barbara Kitchenham, Stuart Charters}
+{EBSE Tech.\ Report EBSE-2007-01, 2007 (GL)}
+{De-facto SLR guideline for SE.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ8).}
+  \item \pro{Structures the peer-reviewed search track.}
+  \item \con{Does not address grey literature.}
+  \item \usmark{$\bigstar$ Primary: SLR methodology.}
+\end{itemize}}
+
+\slrpaper{Page et al.\ (2021) -- PRISMA 2020}
+{Matthew J.\ Page, Joanne E.\ McKenzie et al.}
+{BMJ 372:n71, 2021}
+{Reporting standard for systematic reviews.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ8).}
+  \item \pro{Reporting template for the flow diagram.}
+  \item \con{Medical lineage; SE adaptation via Kitchenham needed.}
+  \item \usmark{$\bigstar$ Primary: reporting template.}
+\end{itemize}}
+
+\slrpaper{Garousi, Felderer, M\"antyl\"a (2019) -- Guidelines for Including Grey Literature and Conducting MLRs in SE}
+{Vahid Garousi, Michael Felderer, Mika V.\ M\"antyl\"a}
+{Inf.\ Softw.\ Technol.\ 106:101--121, 2019}
+{Principled grey-literature inclusion.
+\begin{itemize}[nosep]
+  \item \acq{Channel~3 (SQ8).}
+  \item \pro{Enables formal inclusion of MITRE ATT\&CK, dataset
+  READMEs, tool docs.}
+  \item \con{Grey-literature criteria inherently subjective; requires
+  labeling scheme.}
+  \item \usmark{$\bigstar$ Primary: MLR methodology.}
+\end{itemize}}
+
+
+
+%------------------------------------------------------------------
+\section{Update-round additions}
+These four sources were admitted in the update round (the update-round section of the thesis); they are counted in the dataset-usage record but not in the systematic-search statistics.
+
+\slrpaper{Yan, Shi, Ren et al.\ (2026) -- Log Anomaly Detection via Transformers Pre-Trained on Massive Unlabeled Data}
+{Senming Yan, Lei Shi, Jing Ren, Wei Wang, Limin Sun, Wei Zhang}
+{IEEE Trans.\ Netw.\ Sci.\ Eng.\ 13:5943--5960, 2026}
+{Transformer detector pre-trained on large unlabeled log datasets, then
+fine-tuned for anomaly detection.
+\begin{itemize}[nosep]
+  \item \acq{Update round (dataset-usage record).}
+  \item \datasets{HDFS, BGL, Thunderbird (all in-corpus).}
+  \item \usmark{$\circ$ Contextual: usage evidence for the census.}
+\end{itemize}}
+
+\slrpaper{Sedl\'a\v{c}ek, \v{Z}\'adn\'ik, Barto\v{s} (2025) -- Anomaly Detection in Log Data: A Comparative Study}
+{Ond\v{r}ej Sedl\'a\v{c}ek, Martin \v{Z}\'adn\'ik, V\'aclav Barto\v{s}}
+{Int.\ Conf.\ Netw.\ Serv.\ Manag.\ (CNSM) 2025}
+{Comparative evaluation of log-AD methods on the canonical benchmarks.
+\begin{itemize}[nosep]
+  \item \acq{Update round (dataset-usage record).}
+  \item \datasets{HDFS, BGL, Thunderbird (all in-corpus).}
+  \item \usmark{$\circ$ Contextual: usage evidence for the census.}
+\end{itemize}}
+
+\slrpaper{Xu, Huang, Fox, Patterson, Jordan (2009) -- Detecting Large-Scale System Problems by Mining Console Logs}
+{Wei Xu, Ling Huang, Armando Fox, David Patterson, Michael Jordan}
+{SOSP 2009}
+{The origin paper of the HDFS benchmark: console-log mining with
+PCA-based detection on Hadoop File System logs (and Darkstar game-server
+logs). Notable for the census: the paper that \emph{introduced} the
+HDFS dataset also evaluates anomaly detection on it, so HDFS's career as
+an AD benchmark begins with its own release.
+\begin{itemize}[nosep]
+  \item \acq{Update round (dataset-usage record).}
+  \item \datasets{HDFS (in-corpus); Darkstar (out of corpus). The
+  ``Hadoop File System logs'' are the HDFS dataset, not the Loghub
+  YARN-container Hadoop dataset.}
+  \item \usmark{$\circ$ Contextual: historically foundational usage
+  evidence.}
+\end{itemize}}
+
+\slrpaper{Zhang, Chen, Que et al.\ (2025) -- LogPurge: Log Data Purification for Anomaly Detection via Rule-Enhanced Filtering}
+{Shenglin Zhang, Ziang Chen, Zijing Que, Yilun Liu, Yongqian Sun, Sicheng Wei, Dan Pei, Hailin Li}
+{arXiv:2511.14062, 2025}
+{Rule-enhanced filtering to purify log data before anomaly detection.
+\begin{itemize}[nosep]
+  \item \acq{Update round (dataset-usage record).}
+  \item \datasets{BGL (in-corpus), Liberty (out of corpus,
+  the section on datasets not profiled), and an industrial dataset.}
+  \item \usmark{$\circ$ Contextual: usage evidence for the census.}
+\end{itemize}}

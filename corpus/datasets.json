@@ -1,0 +1,5 @@
+{
+  "name": "My datasets",
+  "description": "Datasets profiled with this pipeline. Each entry is written by the notebook or by registry.save_dataset after a run; the format is documented at the top of src/registry.py.",
+  "datasets": {}
+}

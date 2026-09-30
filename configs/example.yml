@@ -1,0 +1,20 @@
+# Stage 1 configuration: a directory tree of text log files, one host per
+# sub-directory, ISO-style timestamps, attack line numbers in a JSON file.
+#
+#   python src/run_pipeline.py --config configs/example.yml
+#
+# Every key is documented at the top of src/normalize.py.
+
+dataset:   mylogs
+input_dir: data/mylogs
+pattern:   "**/*.log"
+
+host:
+  from: path_part      # the first directory below input_dir names the host
+  index: 0
+
+timestamp:
+  from: auto           # try the common formats in order
+
+labels:
+  from: none           # no ground truth; D3 stays unavailable

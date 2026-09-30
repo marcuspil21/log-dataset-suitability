@@ -1,0 +1,25 @@
+# Stage 1 configuration with ground truth given as anomalous identifiers, the
+# shape used by block-level and job-level labelled datasets: a line counts as
+# attack when an identifier it mentions is listed as anomalous.
+
+dataset:   mylogs
+input_dir: data/mylogs
+pattern:   "*.log"
+
+host:
+  from: line_regex     # the host is a field inside the message
+  pattern: 'host=(\S+)'   # single quotes: YAML leaves backslashes alone
+  fallback: unknown
+
+timestamp:
+  from: regex
+  pattern: '^(\d{6} \d{6})'
+  strptime: "%y%m%d %H%M%S"
+
+labels:
+  from: id_regex
+  pattern: 'blk_-?\d+'
+  ids_csv: data/mylogs/anomaly_label.csv
+  id_column: BlockId
+  label_column: Label
+  attack_values: ["Anomaly"]
